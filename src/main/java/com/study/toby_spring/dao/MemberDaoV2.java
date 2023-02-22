@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.sql.*;
 
 @Slf4j
-public class MemberDao {
+public abstract class MemberDaoV2 {
+
     public void save(Member member) throws ClassNotFoundException, SQLException {
         Connection c = getConnection();
         String sql = "insert into member(id,name,password) values (?,?,?)";
@@ -42,24 +43,9 @@ public class MemberDao {
 
         return member;
     }
-
-    public void deleteAll() throws SQLException, ClassNotFoundException {
-        Connection c = getConnection();
-        String sql = "delete from member";
-
-        log.info("[QUERY]={}", sql);
-
-        PreparedStatement ps = c.prepareStatement(sql);
-
-        int result = ps.executeUpdate();
-    }
-
     /**
-     * extract method
-     * 커넥션 분리
+     * 구현 코드 제거 -> 추상 메서드로 변경
+     * 메소드의 구현은 서브 클래스가 담당
      */
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/toby", "root", "0209");
-    }
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }
